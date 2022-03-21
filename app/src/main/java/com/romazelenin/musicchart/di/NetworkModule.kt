@@ -1,5 +1,6 @@
 package com.romazelenin.musicchart.di
 
+import com.romazelenin.musicchart.data.AlbumCoverServiceApi
 import com.romazelenin.musicchart.data.AuthorBioServiceApi
 import com.romazelenin.musicchart.data.MusicServiceApi
 import dagger.Module
@@ -19,6 +20,9 @@ annotation class MusicService
 @Qualifier
 annotation class BioService
 
+@Qualifier
+annotation class CoverService
+
 @InstallIn(SingletonComponent::class)
 @Module
 object NetworkModule {
@@ -28,6 +32,8 @@ object NetworkModule {
 
     private val authorBioServiceBaseUrl = "https://ws.audioscrobbler.com/"
     private val authorBioServiceApiKey = "f73637a86f62b02edbf1a65dcd7a2377"
+
+    private val coverServiceBaseUrl = "https://open.spotify.com/"
 
     @Provides
     fun provideRetrofitBuilderWithGsonConvertor(): Retrofit.Builder {
@@ -101,6 +107,41 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideArtistBioServiceApi(@BioService retrofit: Retrofit): AuthorBioServiceApi {
+        return retrofit.create()
+    }
+
+    @CoverService
+    @Provides
+    fun provideCoverServiceRetrofit(
+        retrofit: Retrofit.Builder,
+        @CoverService httpClient: OkHttpClient
+    ): Retrofit {
+        return retrofit
+            .baseUrl(coverServiceBaseUrl)
+            .client(httpClient)
+            .build()
+    }
+
+    @CoverService
+    @Provides
+    fun provideCoverServiceHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor {
+                val queryParameter = it.request().url.queryParameter("url")
+                val urlWithQueryParameter = it.request().url.newBuilder()
+                    .setQueryParameter("url", "spotify:album:$queryParameter")
+                    .build()
+                val request = it.request().newBuilder()
+                    .url(urlWithQueryParameter)
+                    .build()
+                it.proceed(request)
+            }
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideApiAlbumCoversService(@CoverService retrofit: Retrofit): AlbumCoverServiceApi {
         return retrofit.create()
     }
 }
