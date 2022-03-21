@@ -1,6 +1,45 @@
 buildscript {
     ext {
         compose_ui_version = '1.1.1'
+        navVersion = "2.4.1"
+        coilVersion = "2.0.0-rc01"
+        pagingVersion = "3.1.1"
+        hiltVersion = "2.38.1"
+        retrofitVersion = "2.9.0"
+        pagerVersion = "0.23.0"
+        roomVersion = "2.4.2"
+
+        dependencies = [
+                retrofit         : "com.squareup.retrofit2:retrofit:$retrofitVersion",
+                converterGson    : "com.squareup.retrofit2:converter-gson:$retrofitVersion",
+
+                hiltAndroid      : "com.google.dagger:hilt-android:$hiltVersion",
+                hiltCompiler     : "com.google.dagger:hilt-compiler:$hiltVersion",
+
+                paging           : "androidx.paging:paging-runtime:$pagingVersion",
+                pagingCompose    : "androidx.paging:paging-compose:1.0.0-alpha14",
+
+                coil             : "io.coil-kt:coil:$coilVersion",
+                coilCompose      : "io.coil-kt:coil-compose:$coilVersion",
+
+                navigationCompose: "androidx.navigation:navigation-compose:$navVersion",
+
+                pager            : "com.google.accompanist:accompanist-pager:$pagerVersion",
+                pagerIndicators  : "com.google.accompanist:accompanist-pager-indicators:$pagerVersion",
+
+                roomKtx          : "androidx.room:room-ktx:$roomVersion",
+                roomRuntime      : "androidx.room:room-runtime:$roomVersion",
+                roomPaging       : "androidx.room:room-paging:2.5.0-alpha01",
+                roomCompiler     : "androidx.room:room-compiler:$roomVersion",
+
+                sqliteKtx        : "androidx.sqlite:sqlite-ktx:2.2.0",
+
+                composeShimmer   : "com.valentinilk.shimmer:compose-shimmer:1.0.2"
+        ]
+    }
+
+    dependencies {
+        classpath('com.google.dagger:hilt-android-gradle-plugin:2.40.1')
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {

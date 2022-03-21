@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -47,6 +49,40 @@ android {
 }
 
 dependencies {
+
+    def dependencies = rootProject.ext.dependencies
+
+    //Retrofit
+    implementation dependencies.retrofit
+    implementation dependencies.converterGson
+
+    //Hilt
+    implementation dependencies.hiltAndroid
+    kapt dependencies.hiltCompiler
+
+    //Room
+    implementation dependencies.roomKtx
+    implementation dependencies.roomRuntime
+    implementation dependencies.roomPaging
+    kapt dependencies.roomCompiler
+
+    //Navigation
+    implementation dependencies.navigationCompose
+
+    //Paging
+    implementation dependencies.paging
+    implementation dependencies.pagingCompose
+
+    //Coil
+    implementation dependencies.coil
+    implementation dependencies.coilCompose
+
+    //Pager
+    implementation dependencies.pager
+    implementation dependencies.pagerIndicators
+
+    //Shimmer
+    implementation dependencies.composeShimmer
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
