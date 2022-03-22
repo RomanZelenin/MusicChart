@@ -1,4 +1,4 @@
-package com.romazelenin.musicchart.data
+package com.romazelenin.musicchart.data.entity
 
 data class Bio(
     val summary: String,

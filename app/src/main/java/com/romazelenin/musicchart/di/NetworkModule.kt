@@ -1,8 +1,9 @@
 package com.romazelenin.musicchart.di
 
-import com.romazelenin.musicchart.data.AlbumCoverServiceApi
-import com.romazelenin.musicchart.data.AuthorBioServiceApi
-import com.romazelenin.musicchart.data.MusicServiceApi
+
+import com.romazelenin.musicchart.data.service.AlbumCoverServiceApi
+import com.romazelenin.musicchart.data.service.ArtistBioServiceApi
+import com.romazelenin.musicchart.data.service.MusicServiceApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -106,7 +107,7 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideArtistBioServiceApi(@BioService retrofit: Retrofit): AuthorBioServiceApi {
+    fun provideArtistBioServiceApi(@BioService retrofit: Retrofit): ArtistBioServiceApi {
         return retrofit.create()
     }
 

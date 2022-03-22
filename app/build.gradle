@@ -65,6 +65,7 @@ dependencies {
     implementation dependencies.roomRuntime
     implementation dependencies.roomPaging
     kapt dependencies.roomCompiler
+    implementation dependencies.sqliteKtx
 
     //Navigation
     implementation dependencies.navigationCompose

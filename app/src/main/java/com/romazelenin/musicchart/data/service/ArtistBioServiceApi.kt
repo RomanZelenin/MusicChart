@@ -1,9 +1,10 @@
-package com.romazelenin.musicchart.data
+package com.romazelenin.musicchart.data.service
 
+import com.romazelenin.musicchart.data.entity.Bio
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface AuthorBioServiceApi {
+interface ArtistBioServiceApi {
     @GET("2.0/")
     suspend fun getBiography(
         @Query("method") method: String = "artist.getinfo",

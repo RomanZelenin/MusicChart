@@ -1,5 +1,7 @@
-package com.romazelenin.musicchart.data
+package com.romazelenin.musicchart.data.service
 
+import com.romazelenin.musicchart.data.entity.Album
+import com.romazelenin.musicchart.data.entity.Artist
 import retrofit2.http.GET
 import retrofit2.http.Query
 
