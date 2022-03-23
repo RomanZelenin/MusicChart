@@ -28,4 +28,11 @@ class ArtistsRepository @Inject constructor(
             .flow
     }
 
+    fun getFavouriteArtists(): Flow<PagingData<Artist>> {
+        return Pager(
+            config = PagingConfig(pageSize = 20, enablePlaceholders = true),
+        ) { localDataSource.getFavouriteArtists() }
+            .flow
+    }
+
 }

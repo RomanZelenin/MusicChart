@@ -8,12 +8,14 @@ import kotlinx.coroutines.flow.Flow
 
 interface LocalDataSource {
 
-   fun getTopArtists(): PagingSource<Int, Artist>
+    fun getTopArtists(): PagingSource<Int, Artist>
 
-   suspend fun deleteAllTopArtist()
+    fun getFavouriteArtists(): PagingSource<Int, Artist>
 
-   suspend fun insertArtist(artist: Artist)
+    suspend fun deleteAllTopArtist()
 
-   fun getCurrentCountry(): Flow<CurrentCountry>
+    suspend fun insertArtist(artist: Artist)
+
+    fun getCurrentCountry(): Flow<CurrentCountry>
 
 }

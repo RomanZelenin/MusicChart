@@ -15,8 +15,11 @@ class ImplLocalDataSource @Inject constructor(private val topArtistsRepository: 
     private val artistDao = topArtistsRepository.getArtistDao()
 
     override fun getTopArtists(): PagingSource<Int, Artist> {
-        return topArtistsRepository.getArtistDao()
-            .getTopArtists()
+        return artistDao.getTopArtists()
+    }
+
+    override fun getFavouriteArtists(): PagingSource<Int, Artist> {
+        return artistDao.getFavouriteArtists()
     }
 
     override suspend fun deleteAllTopArtist() {

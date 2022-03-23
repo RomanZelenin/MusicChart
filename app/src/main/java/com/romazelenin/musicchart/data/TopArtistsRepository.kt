@@ -4,10 +4,11 @@ import androidx.paging.PagingSource
 import androidx.room.*
 import com.romazelenin.musicchart.data.entity.Artist
 import com.romazelenin.musicchart.data.entity.CurrentCountry
+import com.romazelenin.musicchart.data.entity.Favourite
 import com.romazelenin.musicchart.data.entity.TopArtists
 import kotlinx.coroutines.flow.Flow
 
-@Database(entities = [Artist::class, TopArtists::class, CurrentCountry::class], version = 1)
+@Database(entities = [Artist::class, TopArtists::class, CurrentCountry::class, Favourite::class], version = 1)
 abstract class TopArtistsRepository : RoomDatabase() {
 
     abstract fun getArtistDao(): ArtistDao
@@ -41,4 +42,18 @@ interface ArtistDao {
 
     @Query("Select * From CurrentCountry")
     fun getCurrentCountry(): Flow<CurrentCountry>
+
+    @Query(
+        "SELECT Artist.artist_id,Artist.artist_name,Artist.artist_rating " +
+                "FROM Favourite " +
+                "INNER JOIN Artist " +
+                "ON Artist.artist_id == Favourite.artist_id "
+    )
+    fun getFavouriteArtists(): PagingSource<Int, Artist>
+
+    @Query("DELETE FROM Favourite WHERE artist_id == :artist_id")
+    suspend fun deleteFavourite(artist_id: Long)
+
+    @Insert
+    suspend fun insertFavourite(favourite: Favourite)
 }
