@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">MusicChart</string>
+    <string name="ru">ru</string>
+    <string name="us">us</string>
+    <string name="uk">uk</string>
+    <string name="country_top_chart">Country top chart</string>
+    <string name="artist">Artist</string>
+    <string name="rating">Rating</string>
+    <string name="russia">Russia</string>
+    <string name="united_states">United States</string>
+    <string name="united_kingdom">United Kingdom</string>
+    <string name="albums">Albums</string>
+    <string name="favourite">Favourite</string>
+    <string name="top_artists">Top Artists</string>
 </resources>
