@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetArtistBiographyUseCase @Inject constructor(private val artistsRepository: ArtistsRepository) {
-    operator fun invoke(artistName: String): Flow<Bio> {
+    operator fun invoke(artistName: String): Flow<Bio?> {
         return artistsRepository.getArtistBio(artistName)
     }
 }

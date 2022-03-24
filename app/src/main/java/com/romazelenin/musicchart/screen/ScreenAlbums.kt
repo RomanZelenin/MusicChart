@@ -42,12 +42,14 @@ fun ScreenAlbums(
     val pagerState = rememberPagerState()
     navController.currentBackStackEntry?.arguments?.let {
         Column {
-            val data = mapOf(
-                "artistId" to it.getLong("artistId"),
-                "artistName" to it.getString("artistName")!!
-            )
             Tabs(tabs = tabs, pagerState = pagerState)
-            TabsContent(tabs = tabs, pagerState = pagerState, viewModel, data)
+            if (it.getString("artistName") != null) {
+                val data = mapOf(
+                    "artistId" to it.getLong("artistId"),
+                    "artistName" to it.getString("artistName")!!
+                )
+                TabsContent(tabs = tabs, pagerState = pagerState, viewModel, data)
+            }
         }
     }
 
@@ -64,6 +66,7 @@ sealed class TabItem(var icon: Int? = null, var title: String, var screen: Compo
     object Bio : TabItem(title = "Bio", screen = { viewModel, data ->
         val bio =
             viewModel.getArtistBio(data["artistName"].toString()).collectAsState(initial = null)
+
         val scrollState = rememberScrollState()
         Column(
             modifier = Modifier
@@ -198,7 +201,7 @@ private fun Cover(modifier: Modifier = Modifier, url: String?) {
 @Composable
 fun Tabs(tabs: List<TabItem>, pagerState: PagerState) {
     val scope = rememberCoroutineScope()
-    // OR ScrollableTabRow()
+
     TabRow(
         selectedTabIndex = pagerState.currentPage,
         backgroundColor = Color.Transparent,

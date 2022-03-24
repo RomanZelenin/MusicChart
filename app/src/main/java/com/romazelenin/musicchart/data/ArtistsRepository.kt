@@ -1,20 +1,16 @@
 package com.romazelenin.musicchart.data
 
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
+import androidx.paging.*
 import com.romazelenin.musicchart.data.entity.Album
 import com.romazelenin.musicchart.data.entity.Artist
 import com.romazelenin.musicchart.data.entity.Bio
 import com.romazelenin.musicchart.data.local.LocalDataSource
 import com.romazelenin.musicchart.data.remote.RemoteDataSource
+import com.romazelenin.musicchart.data.service.AlbumCoverServiceApi
 import com.romazelenin.musicchart.data.service.Country
 import com.romazelenin.musicchart.paging.AlbumsPagingSourceFactory
 import com.romazelenin.musicchart.paging.TopArtistsMediator
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -23,6 +19,7 @@ class ArtistsRepository @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
     private val albumsPagingSourceFactory: AlbumsPagingSourceFactory,
+    private val albumCoverService: AlbumCoverServiceApi,
 ) {
     private val mediator = TopArtistsMediator(remoteDataSource, localDataSource)
 
@@ -50,18 +47,33 @@ class ArtistsRepository @Inject constructor(
         localDataSource.deleteFavouriteArtist(artistId)
     }
 
-    fun getAlbums(artistId: Long): Flow<PagingData<Album>> {
-        return Pager(config = PagingConfig(pageSize = 20, enablePlaceholders = true)) {
+    fun getAlbums(artistId: Long)=
+        Pager(config = PagingConfig(pageSize = 20)) {
             albumsPagingSourceFactory.createAlbumsPagingSource(artistId)
         }.flow
-    }
+            .distinctUntilChanged()
+            .map { album ->
+                album.map {
+                    if (it.external_ids["spotify"]!!.isNotEmpty()) {
+                        Pair<Album,String?>(
+                            it,
+                            albumCoverService.getAlbumCover(it.external_ids["spotify"]!![0]).thumbnail_url
+                        )
+                    } else {
+                        Pair<Album,String?>(it, null)
+                    }
+                }
+            }.catch {
+                //emit(Pair<Album,String?>(it, null))
+            }
+
 
     private val _authorBiography = MutableStateFlow<Bio?>(null)
 
     fun getArtistBio(artistName: String) =
-        flow {
+        flow<Bio?> {
             emit(remoteDataSource.getArtistBio(artistName))
-        }
+        }.catch { emit(null) }
 
 
     fun getCurrentCountry() = localDataSource.getCurrentCountry()

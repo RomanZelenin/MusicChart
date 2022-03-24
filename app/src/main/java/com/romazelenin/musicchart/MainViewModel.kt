@@ -21,7 +21,6 @@ class MainViewModel @Inject constructor(
     private val deleteFavouriteArtistUseCase: DeleteFavouriteArtistUseCase,
     private val getAlbumsUseCase: GetAlbumsUseCase,
     private val getArtistBiographyUseCase: GetArtistBiographyUseCase,
-    private val albumCoverService: AlbumCoverServiceApi,
     private val getCurrentCountryUseCase: GetCurrentCountryUseCase,
     private val setCurrentCountryUseCase: SetCurrentCountryUseCase
 ) :
@@ -46,21 +45,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun getAlbums(artistId: Long) =
-        getAlbumsUseCase(artistId)
-            .distinctUntilChanged()
-            .map { album ->
-                album.map {
-                    if (it.external_ids["spotify"]!!.isNotEmpty()) {
-                        Pair(
-                            it,
-                            albumCoverService.getAlbumCover(it.external_ids["spotify"]!![0]).thumbnail_url
-                        )
-                    } else {
-                        Pair(it, null)
-                    }
-                }
-            }
-            .cachedIn(viewModelScope)
+        getAlbumsUseCase(artistId).cachedIn(viewModelScope)
 
     fun getArtistBio(artistName: String) =
         getArtistBiographyUseCase(artistName)
