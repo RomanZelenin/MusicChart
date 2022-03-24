@@ -38,7 +38,7 @@ interface ArtistDao {
     suspend fun refreshSqliteSequence()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun updateCurrentCountry(country: CurrentCountry)
+    suspend fun setCurrentCountry(country: CurrentCountry)
 
     @Query("Select * From CurrentCountry")
     fun getCurrentCountry(): Flow<CurrentCountry>

@@ -9,6 +9,7 @@ import com.romazelenin.musicchart.data.entity.Artist
 import com.romazelenin.musicchart.data.entity.Bio
 import com.romazelenin.musicchart.data.local.LocalDataSource
 import com.romazelenin.musicchart.data.remote.RemoteDataSource
+import com.romazelenin.musicchart.data.service.Country
 import com.romazelenin.musicchart.paging.AlbumsPagingSourceFactory
 import com.romazelenin.musicchart.paging.TopArtistsMediator
 import kotlinx.coroutines.flow.Flow
@@ -63,4 +64,9 @@ class ArtistsRepository @Inject constructor(
         }
 
 
+    fun getCurrentCountry() = localDataSource.getCurrentCountry()
+
+    suspend fun setCurrentCountry(country: Country) {
+        localDataSource.setCurrentCountry(country)
+    }
 }

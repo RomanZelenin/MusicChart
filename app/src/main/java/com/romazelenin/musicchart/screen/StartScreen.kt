@@ -29,6 +29,7 @@ import androidx.navigation.navArgument
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.romazelenin.musicchart.MainViewModel
+import com.romazelenin.musicchart.data.service.Country
 
 private data class CountryItem(
     @DrawableRes val flagIcon: Int,
@@ -131,9 +132,9 @@ fun StartScreen(viewModel: MainViewModel) {
                         )
                         Divider()
                         countries.forEach { country ->
-                            //val abbreviation = stringResource(country.abbreviation)
+                            val abbreviation = stringResource(country.abbreviation)
                             DropdownMenuItem(onClick = {
-                                //viewModel.setCountry(abbreviation)
+                                viewModel.setCountry(Country.valueOf(abbreviation))
                                 expanded = false
                             }) {
                                 Icon(

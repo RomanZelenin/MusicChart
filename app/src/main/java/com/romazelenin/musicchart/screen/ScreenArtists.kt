@@ -10,6 +10,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,6 +27,7 @@ import androidx.paging.compose.itemsIndexed
 import com.romazelenin.musicchart.MainViewModel
 import com.romazelenin.musicchart.R
 import com.romazelenin.musicchart.data.entity.Artist
+import kotlinx.coroutines.flow.collectLatest
 
 
 @Composable
@@ -34,7 +36,7 @@ fun ScreenArtists(
     viewModel: MainViewModel,
 ) {
     val artists = viewModel.artists.collectAsLazyPagingItems()
-    /*LaunchedEffect(true) {
+    LaunchedEffect(true) {
         var isFirstLaunch = false
          viewModel.currentCountry.collectLatest {
              if (isFirstLaunch) {
@@ -42,7 +44,7 @@ fun ScreenArtists(
              }
              isFirstLaunch = true
          }
-    }*/
+    }
     ListArtists(
         navController = navController,
         artists = artists

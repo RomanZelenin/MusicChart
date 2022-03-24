@@ -7,6 +7,7 @@ import com.romazelenin.musicchart.data.entity.Artist
 import com.romazelenin.musicchart.data.entity.CurrentCountry
 import com.romazelenin.musicchart.data.entity.Favourite
 import com.romazelenin.musicchart.data.entity.TopArtists
+import com.romazelenin.musicchart.data.service.Country
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -47,6 +48,10 @@ class ImplLocalDataSource @Inject constructor(private val topArtistsRepository: 
 
     override fun getCurrentCountry(): Flow<CurrentCountry> {
         return artistDao.getCurrentCountry()
+    }
+
+    override suspend fun setCurrentCountry(country: Country) {
+        artistDao.setCurrentCountry(CurrentCountry(country = country.name))
     }
 
 }

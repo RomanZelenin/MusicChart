@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.romazelenin.musicchart.data.service.AlbumCoverServiceApi
+import com.romazelenin.musicchart.data.service.Country
 import com.romazelenin.musicchart.usecase.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -20,15 +21,17 @@ class MainViewModel @Inject constructor(
     private val deleteFavouriteArtistUseCase: DeleteFavouriteArtistUseCase,
     private val getAlbumsUseCase: GetAlbumsUseCase,
     private val getArtistBiographyUseCase: GetArtistBiographyUseCase,
-    private val albumCoverService: AlbumCoverServiceApi
+    private val albumCoverService: AlbumCoverServiceApi,
+    private val getCurrentCountryUseCase: GetCurrentCountryUseCase,
+    private val setCurrentCountryUseCase: SetCurrentCountryUseCase
 ) :
     ViewModel() {
 
-    //TODO
-/*    val currentCountry = artistDao.getCurrentCountry().distinctUntilChanged()
-    fun setCountry(country: String) {
-        viewModelScope.launch { artistDao.updateCountry(CurrentCountry(country = country)) }
-    }*/
+
+    val currentCountry = getCurrentCountryUseCase().distinctUntilChanged()
+    fun setCountry(country: Country) {
+        viewModelScope.launch {setCurrentCountryUseCase(country) }
+    }
 
     val artists = getTopArtistsUseCase().cachedIn(viewModelScope)
 
