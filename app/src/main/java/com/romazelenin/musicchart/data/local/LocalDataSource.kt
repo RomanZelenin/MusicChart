@@ -12,6 +12,10 @@ interface LocalDataSource {
 
     fun getFavouriteArtists(): PagingSource<Int, Artist>
 
+    suspend fun addFavouriteArtist(artistId:Long)
+
+    suspend fun deleteFavouriteArtist(artistId: Long)
+
     suspend fun deleteAllTopArtist()
 
     suspend fun insertArtist(artist: Artist)

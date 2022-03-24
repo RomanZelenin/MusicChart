@@ -12,6 +12,7 @@ import com.romazelenin.musicchart.data.local.ImplLocalDataSource
 import com.romazelenin.musicchart.data.local.LocalDataSource
 import com.romazelenin.musicchart.data.remote.ImplRemoteDataSource
 import com.romazelenin.musicchart.data.remote.RemoteDataSource
+import com.romazelenin.musicchart.data.service.ArtistBioServiceApi
 import com.romazelenin.musicchart.data.service.MusicServiceApi
 import dagger.Module
 import dagger.Provides
@@ -47,8 +48,8 @@ object DataModule {
     }
 
     @Provides
-    fun provideRemoteDataSource(musicServiceApi: MusicServiceApi): RemoteDataSource {
-        return ImplRemoteDataSource(musicServiceApi)
+    fun provideRemoteDataSource(musicServiceApi: MusicServiceApi, artistBioServiceApi: ArtistBioServiceApi): RemoteDataSource {
+        return ImplRemoteDataSource(musicServiceApi, artistBioServiceApi)
     }
 
 }

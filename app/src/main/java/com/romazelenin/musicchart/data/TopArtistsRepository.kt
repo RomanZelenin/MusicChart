@@ -52,8 +52,8 @@ interface ArtistDao {
     fun getFavouriteArtists(): PagingSource<Int, Artist>
 
     @Query("DELETE FROM Favourite WHERE artist_id == :artist_id")
-    suspend fun deleteFavourite(artist_id: Long)
+    suspend fun deleteFavouriteArtist(artist_id: Long)
 
     @Insert
-    suspend fun insertFavourite(favourite: Favourite)
+    suspend fun insertFavouriteArtist(favourite: Favourite)
 }

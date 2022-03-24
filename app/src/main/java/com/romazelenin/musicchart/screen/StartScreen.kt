@@ -5,10 +5,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,6 +26,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.romazelenin.musicchart.MainViewModel
 
 private data class CountryItem(
@@ -89,14 +88,17 @@ fun StartScreen(viewModel: MainViewModel) {
                     )
                 },
                 actions = actionsTopAppBar,
-                navigationIcon = {
-                    currentBackStackEntry?.let {
-                        if(it.destination.route!!.startsWith(Screen.Albums.route)){
+                navigationIcon = currentBackStackEntry?.let {
+                    if (currentBackStackEntry!!.destination.route!!.startsWith(Screen.Albums.route)) {
+                        {
                             IconButton(onClick = { navController.navigateUp() }) {
-                                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
+                                Icon(
+                                    imageVector = Icons.Default.ArrowBack,
+                                    contentDescription = null
+                                )
                             }
                         }
-                    }
+                    }else null
                 }
             )
         },
@@ -160,15 +162,39 @@ fun StartScreen(viewModel: MainViewModel) {
             )
             { navBackStackEntry ->
                 title = navBackStackEntry.arguments?.getString("artistName")!!
-                actionsTopAppBar = {}
+                actionsTopAppBar = {
+                    var favIcon by remember { mutableStateOf(Icons.Default.FavoriteBorder) }
+                    val favArtists = viewModel.favouriteArtists.collectAsLazyPagingItems()
+                    val artistId = navBackStackEntry.arguments?.getLong("artistId")!!
+
+                    if (favArtists.loadState.append is LoadState.NotLoading) {
+                        for (i in 0 .. favArtists.itemCount) {
+                            if (i == favArtists.itemCount) {
+                                favIcon = Icons.Default.FavoriteBorder
+                            } else if (favArtists[i]!!.artist_id == artistId) {
+                                favIcon = Icons.Default.Favorite
+                                break
+                            }
+                        }
+                    }
+                    IconButton(onClick = {
+                        if (favIcon == Icons.Default.FavoriteBorder) {
+                            viewModel.addFavouriteArtist(artistId)
+                        } else {
+                            viewModel.deleteFavouriteArtist(artistId)
+                        }
+                    }) {
+                        Icon(imageVector = favIcon, contentDescription = null)
+                    }
+                }
                 bottomBar = {}
-                //TODO
+                ScreenAlbums(navController = navController, viewModel = viewModel)
             }
             composable(Screen.Favourite.route) {
                 title = stringResource(id = Screen.Favourite.resourceId)
                 actionsTopAppBar = {}
                 bottomBar = { BottomBar(navController = navController, setTitle = { title = it }) }
-                //TODO
+                ScreenFavourite(navController = navController, viewModel = viewModel)
             }
         }
     }

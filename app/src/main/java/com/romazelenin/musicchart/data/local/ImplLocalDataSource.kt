@@ -5,6 +5,7 @@ import androidx.room.withTransaction
 import com.romazelenin.musicchart.data.TopArtistsRepository
 import com.romazelenin.musicchart.data.entity.Artist
 import com.romazelenin.musicchart.data.entity.CurrentCountry
+import com.romazelenin.musicchart.data.entity.Favourite
 import com.romazelenin.musicchart.data.entity.TopArtists
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -20,6 +21,14 @@ class ImplLocalDataSource @Inject constructor(private val topArtistsRepository: 
 
     override fun getFavouriteArtists(): PagingSource<Int, Artist> {
         return artistDao.getFavouriteArtists()
+    }
+
+    override suspend fun addFavouriteArtist(artistId: Long) {
+        artistDao.insertFavouriteArtist(Favourite(artist_id = artistId))
+    }
+
+    override suspend fun deleteFavouriteArtist(artistId: Long) {
+        artistDao.deleteFavouriteArtist(artistId)
     }
 
     override suspend fun deleteAllTopArtist() {
