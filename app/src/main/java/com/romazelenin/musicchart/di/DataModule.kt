@@ -19,6 +19,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -43,13 +44,20 @@ object DataModule {
     }
 
     @Provides
-    fun provideLocalDataSource(topArtistsRepository: TopArtistsRepository): LocalDataSource {
-        return ImplLocalDataSource(topArtistsRepository)
+    fun provideLocalDataSource(
+        topArtistsRepository: TopArtistsRepository,
+        @IoDispatcher dispatcher: CoroutineDispatcher
+    ): LocalDataSource {
+        return ImplLocalDataSource(topArtistsRepository, dispatcher)
     }
 
     @Provides
-    fun provideRemoteDataSource(musicServiceApi: MusicServiceApi, artistBioServiceApi: ArtistBioServiceApi): RemoteDataSource {
-        return ImplRemoteDataSource(musicServiceApi, artistBioServiceApi)
+    fun provideRemoteDataSource(
+        musicServiceApi: MusicServiceApi,
+        artistBioServiceApi: ArtistBioServiceApi,
+        @IoDispatcher dispatcher: CoroutineDispatcher
+    ): RemoteDataSource {
+        return ImplRemoteDataSource(musicServiceApi, artistBioServiceApi, dispatcher)
     }
 
 }

@@ -2,6 +2,7 @@ package com.romazelenin.musicchart.data.local
 
 import androidx.paging.PagingSource
 import com.romazelenin.musicchart.data.entity.Artist
+import com.romazelenin.musicchart.data.entity.Bio
 import com.romazelenin.musicchart.data.entity.CurrentCountry
 import com.romazelenin.musicchart.data.service.Country
 import kotlinx.coroutines.flow.Flow
@@ -25,4 +26,5 @@ interface LocalDataSource {
 
     suspend fun setCurrentCountry(country: Country)
 
+    suspend fun getArtistBio(artistName:String):Bio
 }

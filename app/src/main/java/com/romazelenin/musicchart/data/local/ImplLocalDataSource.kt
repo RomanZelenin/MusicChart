@@ -3,15 +3,19 @@ package com.romazelenin.musicchart.data.local
 import androidx.paging.PagingSource
 import androidx.room.withTransaction
 import com.romazelenin.musicchart.data.TopArtistsRepository
-import com.romazelenin.musicchart.data.entity.Artist
-import com.romazelenin.musicchart.data.entity.CurrentCountry
-import com.romazelenin.musicchart.data.entity.Favourite
-import com.romazelenin.musicchart.data.entity.TopArtists
+import com.romazelenin.musicchart.data.entity.*
 import com.romazelenin.musicchart.data.service.Country
+import com.romazelenin.musicchart.di.IoDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ImplLocalDataSource @Inject constructor(private val topArtistsRepository: TopArtistsRepository) :
+class ImplLocalDataSource @Inject constructor(
+    private val topArtistsRepository: TopArtistsRepository,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+) :
     LocalDataSource {
 
     private val artistDao = topArtistsRepository.getArtistDao()
@@ -24,22 +28,22 @@ class ImplLocalDataSource @Inject constructor(private val topArtistsRepository: 
         return artistDao.getFavouriteArtists()
     }
 
-    override suspend fun addFavouriteArtist(artistId: Long) {
+    override suspend fun addFavouriteArtist(artistId: Long) = withContext(ioDispatcher) {
         artistDao.insertFavouriteArtist(Favourite(artist_id = artistId))
     }
 
-    override suspend fun deleteFavouriteArtist(artistId: Long) {
+    override suspend fun deleteFavouriteArtist(artistId: Long) = withContext(ioDispatcher) {
         artistDao.deleteFavouriteArtist(artistId)
     }
 
-    override suspend fun deleteAllTopArtist() {
+    override suspend fun deleteAllTopArtist() = withContext(ioDispatcher) {
         topArtistsRepository.withTransaction {
             artistDao.deleteAllTopArtist()
             artistDao.refreshSqliteSequence()
         }
     }
 
-    override suspend fun insertArtist(artist: Artist) {
+    override suspend fun insertArtist(artist: Artist) = withContext(ioDispatcher) {
         topArtistsRepository.withTransaction {
             artistDao.insertTop(TopArtists(artist_id = artist.artist_id))
             artistDao.insert(artist)
@@ -47,11 +51,15 @@ class ImplLocalDataSource @Inject constructor(private val topArtistsRepository: 
     }
 
     override fun getCurrentCountry(): Flow<CurrentCountry> {
-        return artistDao.getCurrentCountry()
+        return artistDao.getCurrentCountry().flowOn(ioDispatcher)
     }
 
-    override suspend fun setCurrentCountry(country: Country) {
+    override suspend fun setCurrentCountry(country: Country) = withContext(ioDispatcher) {
         artistDao.setCurrentCountry(CurrentCountry(country = country.name))
+    }
+
+    override suspend fun getArtistBio(artistName: String): Bio = withContext(ioDispatcher) {
+        TODO("Not yet implemented")
     }
 
 }

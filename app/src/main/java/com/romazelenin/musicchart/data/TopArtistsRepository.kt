@@ -2,10 +2,7 @@ package com.romazelenin.musicchart.data
 
 import androidx.paging.PagingSource
 import androidx.room.*
-import com.romazelenin.musicchart.data.entity.Artist
-import com.romazelenin.musicchart.data.entity.CurrentCountry
-import com.romazelenin.musicchart.data.entity.Favourite
-import com.romazelenin.musicchart.data.entity.TopArtists
+import com.romazelenin.musicchart.data.entity.*
 import kotlinx.coroutines.flow.Flow
 
 @Database(entities = [Artist::class, TopArtists::class, CurrentCountry::class, Favourite::class], version = 1)
