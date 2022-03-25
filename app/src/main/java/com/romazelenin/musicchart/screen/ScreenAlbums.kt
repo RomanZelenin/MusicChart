@@ -83,6 +83,8 @@ sealed class TabItem(var icon: Int? = null, var title: String, var screen: Compo
 
 @Composable
 fun ListAlbums(modifier: Modifier = Modifier, albums: LazyPagingItems<Pair<Album, String?>>) {
+    val defaultAlbum = remember { Album(-1, "", "", mapOf()) }
+
     LazyColumn(modifier.fillMaxSize()) {
         itemsIndexed(albums) { index, value ->
             value?.let { album ->
@@ -92,10 +94,10 @@ fun ListAlbums(modifier: Modifier = Modifier, albums: LazyPagingItems<Pair<Album
                 }
             }
         }
+
         if (albums.loadState.append is LoadState.Loading || albums.loadState.refresh is LoadState.Loading) {
-            val album = Album(-1, "", "", mapOf())
             items(10) {
-                ItemAlbum(album = album,
+                ItemAlbum(album = defaultAlbum,
                     cover = {
                         Box(
                             modifier = Modifier
@@ -111,7 +113,7 @@ fun ListAlbums(modifier: Modifier = Modifier, albums: LazyPagingItems<Pair<Album
                         }
                     }, content = {
                         AlbumDescription(
-                            album = album,
+                            album = defaultAlbum,
                             modifier = Modifier.shimmer(),
                             shimmerBackgroundColor = Color.LightGray
                         )

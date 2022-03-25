@@ -99,7 +99,7 @@ fun StartScreen(viewModel: MainViewModel) {
                                 )
                             }
                         }
-                    }else null
+                    } else null
                 }
             )
         },
@@ -111,48 +111,51 @@ fun StartScreen(viewModel: MainViewModel) {
         ) {
             composable(Screen.Artists.route) {
                 title = stringResource(id = Screen.Artists.resourceId)
-                actionsTopAppBar = {
-                    var expanded by remember { mutableStateOf(false) }
+                LaunchedEffect(true) {
+                    actionsTopAppBar = {
+                        var expanded by remember { mutableStateOf(false) }
 
-                    IconButton(onClick = { expanded = true }) {
-                        Icon(imageVector = Icons.Default.Place, contentDescription = null)
-                    }
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            text = stringResource(com.romazelenin.musicchart.R.string.country_top_chart),
-                            textAlign = TextAlign.Center,
-                            fontFamily = FontFamily.Serif,
-                            fontSize = 16.sp
-                        )
-                        Divider()
-                        countries.forEach { country ->
-                            val abbreviation = stringResource(country.abbreviation)
-                            DropdownMenuItem(onClick = {
-                                viewModel.setCountry(Country.valueOf(abbreviation))
-                                expanded = false
-                            }) {
-                                Icon(
-                                    modifier = Modifier.size(width = 30.dp, height = 20.dp),
-                                    painter = painterResource(id = country.flagIcon),
-                                    contentDescription = null,
-                                    tint = Color.Unspecified
-                                )
-                                Spacer(modifier = Modifier.width(2.dp))
-                                Text(
-                                    stringResource(country.countryName),
-                                    fontFamily = FontFamily.Serif
-                                )
+                        IconButton(onClick = { expanded = true }) {
+                            Icon(imageVector = Icons.Default.Place, contentDescription = null)
+                        }
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                text = stringResource(com.romazelenin.musicchart.R.string.country_top_chart),
+                                textAlign = TextAlign.Center,
+                                fontFamily = FontFamily.Serif,
+                                fontSize = 16.sp
+                            )
+                            Divider()
+                            countries.forEach { country ->
+                                val abbreviation = stringResource(country.abbreviation)
+                                DropdownMenuItem(onClick = {
+                                    viewModel.setCountry(Country.valueOf(abbreviation))
+                                    expanded = false
+                                }) {
+                                    Icon(
+                                        modifier = Modifier.size(width = 30.dp, height = 20.dp),
+                                        painter = painterResource(id = country.flagIcon),
+                                        contentDescription = null,
+                                        tint = Color.Unspecified
+                                    )
+                                    Spacer(modifier = Modifier.width(2.dp))
+                                    Text(
+                                        stringResource(country.countryName),
+                                        fontFamily = FontFamily.Serif
+                                    )
+                                }
                             }
                         }
                     }
+                    bottomBar =
+                        { BottomBar(navController = navController, setTitle = { title = it }) }
                 }
-                bottomBar = { BottomBar(navController = navController, setTitle = { title = it }) }
                 ScreenArtists(navController = navController, viewModel)
             }
             composable(
@@ -163,38 +166,42 @@ fun StartScreen(viewModel: MainViewModel) {
             )
             { navBackStackEntry ->
                 title = navBackStackEntry.arguments?.getString("artistName")!!
-                actionsTopAppBar = {
-                    var favIcon by remember { mutableStateOf(Icons.Default.FavoriteBorder) }
-                    val favArtists = viewModel.favouriteArtists.collectAsLazyPagingItems()
-                    val artistId = navBackStackEntry.arguments?.getLong("artistId")!!
+                LaunchedEffect(true){
+                    actionsTopAppBar = {
+                        var favIcon by remember { mutableStateOf(Icons.Default.FavoriteBorder) }
+                        val favArtists = viewModel.favouriteArtists.collectAsLazyPagingItems()
+                        val artistId = navBackStackEntry.arguments?.getLong("artistId")!!
 
-                    if (favArtists.loadState.append is LoadState.NotLoading) {
-                        for (i in 0 .. favArtists.itemCount) {
-                            if (i == favArtists.itemCount) {
-                                favIcon = Icons.Default.FavoriteBorder
-                            } else if (favArtists[i]!!.artist_id == artistId) {
-                                favIcon = Icons.Default.Favorite
-                                break
+                        if (favArtists.loadState.append is LoadState.NotLoading) {
+                            for (i in 0..favArtists.itemCount) {
+                                if (i == favArtists.itemCount) {
+                                    favIcon = Icons.Default.FavoriteBorder
+                                } else if (favArtists[i]!!.artist_id == artistId) {
+                                    favIcon = Icons.Default.Favorite
+                                    break
+                                }
                             }
                         }
-                    }
-                    IconButton(onClick = {
-                        if (favIcon == Icons.Default.FavoriteBorder) {
-                            viewModel.addFavouriteArtist(artistId)
-                        } else {
-                            viewModel.deleteFavouriteArtist(artistId)
+                        IconButton(onClick = {
+                            if (favIcon == Icons.Default.FavoriteBorder) {
+                                viewModel.addFavouriteArtist(artistId)
+                            } else {
+                                viewModel.deleteFavouriteArtist(artistId)
+                            }
+                        }) {
+                            Icon(imageVector = favIcon, contentDescription = null)
                         }
-                    }) {
-                        Icon(imageVector = favIcon, contentDescription = null)
                     }
+                    bottomBar = {}
                 }
-                bottomBar = {}
                 ScreenAlbums(navController = navController, viewModel = viewModel)
             }
             composable(Screen.Favourite.route) {
                 title = stringResource(id = Screen.Favourite.resourceId)
-                actionsTopAppBar = {}
-                bottomBar = { BottomBar(navController = navController, setTitle = { title = it }) }
+                LaunchedEffect(true){
+                    actionsTopAppBar = {}
+                    bottomBar = { BottomBar(navController = navController, setTitle = { title = it }) }
+                }
                 ScreenFavourite(navController = navController, viewModel = viewModel)
             }
         }
