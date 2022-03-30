@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
@@ -38,12 +39,12 @@ fun ScreenArtists(
     val artists = viewModel.artists.collectAsLazyPagingItems()
     LaunchedEffect(true) {
         var isFirstLaunch = false
-         viewModel.currentCountry.collectLatest {
-             if (isFirstLaunch) {
-                 artists.refresh()
-             }
-             isFirstLaunch = true
-         }
+        viewModel.currentCountry.collectLatest {
+            if (isFirstLaunch) {
+                artists.refresh()
+            }
+            isFirstLaunch = true
+        }
     }
     ListArtists(
         navController = navController,
@@ -54,7 +55,11 @@ fun ScreenArtists(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ListArtists(navController: NavController, artists: LazyPagingItems<Artist>) {
-    LazyColumn {
+    val lazyListState = rememberLazyListState()
+    LazyColumn(
+        modifier = Modifier.padding(bottom = defaultBottomNavigationHeight),
+        state = lazyListState
+    ) {
         stickyHeader {
             Surface {
                 Row(modifier = Modifier.padding(8.dp)) {
@@ -91,7 +96,6 @@ fun ListArtists(navController: NavController, artists: LazyPagingItems<Artist>) 
 
             }
         }
-        item { Spacer(modifier = Modifier.height(defaultBottomNavigationHeight)) }
         if (artists.loadState.append is LoadState.Loading) {
             item { CircularProgressIndicator(Modifier.padding(16.dp)) }
         }
