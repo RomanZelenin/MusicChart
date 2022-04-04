@@ -78,8 +78,6 @@ class ArtistsRepository @Inject constructor(
             }.flowOn(ioDispatcher)
 
 
-    private val _authorBiography = MutableStateFlow<Bio?>(null)
-
     fun getArtistBio(artistName: String) =
         flow<Bio?> {
             emit(remoteDataSource.getArtistBio(artistName))
